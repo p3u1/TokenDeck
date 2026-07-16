@@ -1,539 +1,353 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>TokenDeck — Native AI Client for Mac & iOS</title>
-    <meta name="description" content="TokenDeck is a powerful native AI client for Mac and iOS. Bring your own NVIDIA NIM or Hugging Face API keys for unlimited, uninterrupted AI model access.">
-    <meta name="keywords" content="tokendeck,mcp,nvidia nim,hugging face,api client,local network,llm,ai models,persistent memory">
-    <meta name="author" content="Paul K">
-    <meta name="theme-color" content="#0a0a0f">
-    <meta property="og:title" content="TokenDeck — Native AI Client for Mac & iOS">
-    <meta property="og:description" content="Run world-class AI models natively on your Mac and iOS devices with your own API keys. No rate limits. No compromises.">
-    <meta property="og:type" content="website">
-    <meta property="og:url" content="https://p3u1.github.io/TokenDeck/">
-    <meta property="og:image" content="https://p3u1.github.io/TokenDeck/assets/app_banner_dark_mode.jpg?v=2">
-    <meta name="twitter:card" content="summary_large_image">
-    <meta name="twitter:title" content="TokenDeck — Native AI Client for Mac & iOS">
-    <meta name="twitter:description" content="Run world-class AI models natively on your Mac and iOS devices. BYO keys. No limits.">
-    <meta name="twitter:image" content="https://p3u1.github.io/TokenDeck/assets/app_banner_dark_mode.jpg?v=2">
-    <link rel="icon" type="image/png" href="assets/app_icon.png?v=2">
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="theme-color" content="#0D1117" />
+    <meta
+      name="description"
+      content="TokenDeck support, model capabilities, and the growing Personas and Skills library."
+    />
+    <meta property="og:title" content="TokenDeck — Support &amp; Skills" />
+    <meta property="og:description" content="A native workspace for NVIDIA NIM and Hugging Face models." />
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content="https://p3u1.github.io/TokenDeck/" />
+    <meta property="og:image" content="https://p3u1.github.io/TokenDeck/assets/banner-dark.png" />
+    <link rel="icon" type="image/png" href="assets/app-icon.png" />
+    <title>TokenDeck — Support &amp; Skills</title>
     <style>
-        :root {
-            --bg-primary: #0a0a0f;
-            --bg-secondary: #111118;
-            --bg-card: #16161f;
-            --bg-card-hover: #1c1c28;
-            --border: #252532;
-            --border-hover: #353545;
-            --text-primary: #f0f0f5;
-            --text-secondary: #9a9aaf;
-            --text-muted: #5a5a70;
-            --accent-blue: #3b82f6;
-            --accent-blue-glow: rgba(59, 130, 246, 0.3);
-            --accent-cyan: #06b6d4;
-            --accent-green: #22c55e;
-            --accent-orange: #f59e0b;
-            --accent-purple: #8b5cf6;
-            --gradient-hero: linear-gradient(135deg, #1a1a2e 0%, #0a0a0f 50%, #111118 100%);
-            --shadow-glow: 0 0 40px rgba(59, 130, 246, 0.15);
-        }
-        * { margin: 0; padding: 0; box-sizing: border-box; }
-        html { scroll-behavior: smooth; }
-        body {
-            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
-            background: var(--bg-primary);
-            color: var(--text-primary);
-            line-height: 1.6;
-            overflow-x: hidden;
-            -webkit-font-smoothing: antialiased;
-        }
-        ::-webkit-scrollbar { width: 8px; }
-        ::-webkit-scrollbar-track { background: var(--bg-primary); }
-        ::-webkit-scrollbar-thumb { background: var(--border-hover); border-radius: 4px; }
-        ::-webkit-scrollbar-thumb:hover { background: var(--text-muted); }
+      :root {
+        color-scheme: dark;
+        --floor: #0d1117;
+        --surface: rgba(35, 43, 54, 0.9);
+        --surface-strong: rgba(27, 34, 44, 0.96);
+        --line: rgba(190, 204, 218, 0.32);
+        --line-bright: rgba(235, 241, 247, 0.42);
+        --ink: #e6e9ee;
+        --muted: #a4adb8;
+        --nim: #76b900;
+        --hf: #ff7a00;
+        --blue: #007aff;
+        --cyan: #00c2ff;
+        --peach: #ffa07a;
+        --amber: #ffb800;
+        --shadow: 0 12px 34px rgba(0, 0, 0, 0.3);
+      }
 
-        /* Navigation */
-        nav {
-            position: fixed;
-            top: 0; left: 0; right: 0;
-            z-index: 1000;
-            padding: 1rem 2rem;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            background: rgba(10, 10, 15, 0.8);
-            backdrop-filter: blur(20px) saturate(180%);
-            -webkit-backdrop-filter: blur(20px) saturate(180%);
-            border-bottom: 1px solid var(--border);
-            transition: all 0.3s ease;
-        }
-        nav.scrolled { padding: 0.75rem 2rem; background: rgba(10, 10, 15, 0.95); }
-        .nav-logo {
-            display: flex;
-            align-items: center;
-            gap: 0.75rem;
-            text-decoration: none;
-            color: var(--text-primary);
-            font-weight: 700;
-            font-size: 1.25rem;
-        }
-        .nav-logo img { width: 36px; height: 36px; border-radius: 9px; }
-        .nav-links { display: flex; gap: 2rem; align-items: center; }
-        .nav-links a {
-            color: var(--text-secondary);
-            text-decoration: none;
-            font-size: 0.875rem;
-            font-weight: 500;
-            transition: color 0.2s ease;
-        }
-        .nav-links a:hover { color: var(--text-primary); }
-        .nav-cta {
-            background: var(--accent-blue);
-            color: white;
-            padding: 0.5rem 1.25rem;
-            border-radius: 8px;
-            font-size: 0.875rem;
-            font-weight: 600;
-            text-decoration: none;
-            transition: all 0.2s ease;
-        }
-        .nav-cta:hover {
-            background: #2563eb;
-            transform: translateY(-1px);
-            box-shadow: 0 4px 12px var(--accent-blue-glow);
-        }
+      * { box-sizing: border-box; }
+      html { scroll-behavior: smooth; }
+      body {
+        min-width: 320px;
+        margin: 0;
+        color: var(--ink);
+        background:
+          radial-gradient(circle at 8% 10%, rgba(118, 185, 0, 0.18), transparent 30rem),
+          radial-gradient(circle at 92% 78%, rgba(255, 122, 0, 0.14), transparent 32rem),
+          var(--floor);
+        font: 16px/1.55 ui-rounded, "SF Pro Rounded", "SF Pro Display", -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
+        -webkit-font-smoothing: antialiased;
+      }
 
-        /* Hero */
-        .hero {
-            min-height: 100vh;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            padding: 8rem 2rem 4rem;
-            position: relative;
-            background: var(--gradient-hero);
-            overflow: hidden;
-        }
-        .hero::before {
-            content: '';
-            position: absolute;
-            top: -50%; left: -50%;
-            width: 200%; height: 200%;
-            background:
-                radial-gradient(circle at 20% 50%, rgba(59, 130, 246, 0.08) 0%, transparent 50%),
-                radial-gradient(circle at 80% 20%, rgba(6, 182, 212, 0.06) 0%, transparent 50%),
-                radial-gradient(circle at 50% 80%, rgba(139, 92, 246, 0.05) 0%, transparent 50%);
-            animation: heroPulse 8s ease-in-out infinite;
-        }
-        @keyframes heroPulse {
-            0%, 100% { transform: scale(1); opacity: 1; }
-            50% { transform: scale(1.05); opacity: 0.8; }
-        }
-        .hero-content { position: relative; z-index: 2; text-align: center; max-width: 900px; }
-        .hero-badge {
-            display: inline-flex;
-            align-items: center;
-            gap: 0.5rem;
-            background: rgba(59, 130, 246, 0.1);
-            border: 1px solid rgba(59, 130, 246, 0.2);
-            color: var(--accent-blue);
-            padding: 0.5rem 1rem;
-            border-radius: 100px;
-            font-size: 0.8125rem;
-            font-weight: 600;
-            margin-bottom: 2rem;
-        }
-        .hero-badge .pulse {
-            width: 8px; height: 8px;
-            background: var(--accent-green);
-            border-radius: 50%;
-            animation: pulse 2s ease-in-out infinite;
-        }
-        @keyframes pulse {
-            0%, 100% { opacity: 1; transform: scale(1); }
-            50% { opacity: 0.5; transform: scale(0.8); }
-        }
-        .hero h1 {
-            font-size: clamp(2.5rem, 6vw, 4.5rem);
-            font-weight: 900;
-            line-height: 1.05;
-            margin-bottom: 1.5rem;
-            letter-spacing: -0.03em;
-        }
-        .hero h1 .gradient-text {
-            background: linear-gradient(135deg, #3b82f6 0%, #06b6d4 50%, #8b5cf6 100%);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-        }
-        .hero p {
-            font-size: clamp(1.0625rem, 2vw, 1.25rem);
-            color: var(--text-secondary);
-            max-width: 640px;
-            margin: 0 auto 2.5rem;
-            line-height: 1.7;
-        }
-        .hero-banner { margin: 3rem auto; max-width: 720px; width: 100%; position: relative; }
-        .hero-banner img {
-            width: 100%; height: auto;
-            border-radius: 16px;
-            box-shadow: 0 0 0 1px var(--border), 0 20px 60px rgba(0,0,0,0.5), 0 0 80px rgba(59,130,246,0.1);
-            transition: transform 0.3s ease, box-shadow 0.3s ease;
-        }
-        .hero-banner img:hover {
-            transform: translateY(-4px);
-            box-shadow: 0 0 0 1px var(--border-hover), 0 30px 80px rgba(0,0,0,0.6), 0 0 100px rgba(59,130,246,0.15);
-        }
-        .hero-cta-group { display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap; margin-top: 2rem; }
-        .btn-primary {
-            background: linear-gradient(135deg, #3b82f6, #2563eb);
-            color: white;
-            padding: 0.875rem 2rem;
-            border-radius: 12px;
-            font-size: 1rem;
-            font-weight: 600;
-            text-decoration: none;
-            border: none;
-            cursor: pointer;
-            transition: all 0.2s ease;
-            display: inline-flex;
-            align-items: center;
-            gap: 0.5rem;
-        }
-        .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 8px 24px rgba(59,130,246,0.35); }
-        .btn-secondary {
-            background: transparent;
-            color: var(--text-primary);
-            padding: 0.875rem 2rem;
-            border-radius: 12px;
-            font-size: 1rem;
-            font-weight: 600;
-            text-decoration: none;
-            border: 1px solid var(--border);
-            cursor: pointer;
-            transition: all 0.2s ease;
-            display: inline-flex;
-            align-items: center;
-            gap: 0.5rem;
-        }
-        .btn-secondary:hover { background: var(--bg-card); border-color: var(--border-hover); transform: translateY(-2px); }
-        .scroll-indicator {
-            position: absolute;
-            bottom: 2rem; left: 50%;
-            transform: translateX(-50%);
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            gap: 0.5rem;
-            color: var(--text-muted);
-            font-size: 0.75rem;
-            animation: bounce 2s ease-in-out infinite;
-        }
-        @keyframes bounce {
-            0%, 100% { transform: translateX(-50%) translateY(0); }
-            50% { transform: translateX(-50%) translateY(8px); }
-        }
+      a { color: inherit; text-decoration: none; }
+      .shell { width: min(1120px, calc(100% - 40px)); margin: 0 auto; }
+      .glass {
+        border: 1px solid var(--line);
+        border-top-color: var(--line-bright);
+        border-radius: 18px;
+        background: var(--surface);
+        box-shadow: var(--shadow);
+        backdrop-filter: blur(22px) saturate(130%);
+        -webkit-backdrop-filter: blur(22px) saturate(130%);
+      }
 
-        /* Features */
-        .features { padding: 6rem 2rem; position: relative; }
-        .container { max-width: 1200px; margin: 0 auto; }
-        .section-header { text-align: center; margin-bottom: 4rem; }
-        .section-header h2 {
-            font-size: clamp(1.75rem, 4vw, 2.5rem);
-            font-weight: 800;
-            margin-bottom: 1rem;
-            letter-spacing: -0.02em;
-        }
-        .section-header p { color: var(--text-secondary); font-size: 1.125rem; max-width: 600px; margin: 0 auto; }
-        .section-label {
-            display: inline-block;
-            background: rgba(59, 130, 246, 0.1);
-            color: var(--accent-blue);
-            padding: 0.375rem 0.875rem;
-            border-radius: 100px;
-            font-size: 0.75rem;
-            font-weight: 700;
-            text-transform: uppercase;
-            letter-spacing: 0.08em;
-            margin-bottom: 1rem;
-        }
-        .features-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(340px, 1fr));
-            gap: 1.5rem;
-        }
-        .feature-card {
-            background: var(--bg-card);
-            border: 1px solid var(--border);
-            border-radius: 16px;
-            padding: 2rem;
-            transition: all 0.3s ease;
-            position: relative;
-            overflow: hidden;
-        }
-        .feature-card::before {
-            content: '';
-            position: absolute;
-            top: 0; left: 0; right: 0;
-            height: 1px;
-            background: linear-gradient(90deg, transparent, var(--accent-blue), transparent);
-            opacity: 0;
-            transition: opacity 0.3s ease;
-        }
+      header { position: sticky; top: 0; z-index: 10; padding: 14px 0 0; }
+      nav {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 16px;
+        padding: 10px 14px;
+        background: rgba(26, 33, 43, 0.82);
+      }
+      .brand { display: flex; align-items: center; gap: 10px; font-size: 18px; font-weight: 800; }
+      .brand img { width: 29px; height: 29px; border-radius: 8px; }
+      .nav-links { display: flex; align-items: center; gap: 16px; color: var(--muted); font-size: 14px; font-weight: 750; }
+      .nav-links a { transition: color 160ms ease; }
+      .nav-links a:hover, .nav-links a:focus-visible { color: var(--ink); }
+
+      main { padding: 14px 0 48px; }
+      section { margin-top: 28px; }
+      main > section:first-child { margin-top: 0; }
+
+      .hero { padding: 22px; overflow: hidden; background: linear-gradient(120deg, rgba(25, 44, 30, 0.9), rgba(27, 32, 40, 0.92) 55%, rgba(48, 30, 27, 0.88)); }
+      .banner { display: block; width: min(100%, 700px); margin: 0 auto 16px; border-radius: 16px; }
+      .hero-copy { max-width: 760px; margin: 0 auto; text-align: center; }
+      .eyebrow { margin: 0 0 8px; color: var(--nim); font-size: 12px; font-weight: 800; letter-spacing: 0.12em; }
+      h1, h2, h3 { margin: 0; line-height: 1.12; letter-spacing: -0.035em; }
+      h1 { font-size: clamp(32px, 5vw, 50px); }
+      h2 { font-size: clamp(25px, 4vw, 36px); }
+      h3 { font-size: 20px; }
+      .lede { max-width: 680px; margin: 12px auto 0; color: var(--muted); font-size: clamp(16px, 2vw, 19px); }
+      .actions { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 18px; }
+      .hero .actions { justify-content: center; }
+      .button {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        min-height: 42px;
+        padding: 0 17px;
+        border: 1px solid var(--line);
+        border-radius: 10px;
+        color: var(--ink);
+        font-weight: 800;
+        transition: border-color 160ms ease, background 160ms ease, transform 160ms ease, box-shadow 160ms ease;
+      }
+      .button:hover, .button:focus-visible { transform: translateY(-1px); border-color: var(--nim); box-shadow: 0 6px 16px rgba(0, 0, 0, 0.2); }
+      .button.primary { border-color: var(--blue); background: var(--blue); color: white; }
+      .button.primary:hover, .button.primary:focus-visible { border-color: var(--cyan); background: #0874e7; }
+
+      .section-heading { max-width: 720px; margin-bottom: 16px; }
+      .section-heading p:not(.eyebrow) { margin: 8px 0 0; color: var(--muted); }
+      .grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; }
+      .card { padding: 20px; }
+      .card p { margin: 10px 0 0; color: var(--muted); }
+      .icon {
+        display: grid;
+        width: 40px;
+        height: 40px;
+        place-items: center;
+        margin-bottom: 16px;
+        border-radius: 12px;
+        color: var(--icon-color, var(--blue));
+        background: var(--icon-surface, rgba(0, 122, 255, 0.16));
+        font-size: 19px;
+        font-weight: 800;
+      }
+
+      .feature-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; }
+      .feature-card {
+        --accent: var(--blue);
+        --glow: rgba(0, 122, 255, 0.28);
+        position: relative;
+        min-height: 220px;
+        overflow: hidden;
+        padding: 20px;
+        isolation: isolate;
+        transition: transform 180ms ease, border-color 180ms ease, background 180ms ease, box-shadow 180ms ease;
+      }
+      .feature-card::before {
+        position: absolute;
+        inset: 0;
+        z-index: -1;
+        border-radius: inherit;
+        background: radial-gradient(circle at 12% 0%, var(--glow), transparent 45%);
+        content: "";
+        opacity: 0;
+        transform: scale(0.94);
+        transition: opacity 180ms ease, transform 300ms ease;
+      }
+      .feature-card::after {
+        position: absolute;
+        top: 0;
+        right: 16px;
+        left: 16px;
+        height: 1px;
+        background: linear-gradient(90deg, transparent, var(--accent), transparent);
+        content: "";
+        opacity: 0.35;
+        transition: opacity 180ms ease, left 180ms ease, right 180ms ease;
+      }
+      .feature-card h3 { margin-top: 2px; font-size: 20px; }
+      .feature-card p { margin: 10px 0 0; color: var(--muted); font-size: 15px; }
+      .feature-card.blue { --accent: var(--blue); --glow: rgba(0, 122, 255, 0.28); --icon-color: var(--blue); --icon-surface: rgba(0, 122, 255, 0.16); }
+      .feature-card.cyan { --accent: var(--cyan); --glow: rgba(0, 194, 255, 0.25); --icon-color: var(--cyan); --icon-surface: rgba(0, 194, 255, 0.14); }
+      .feature-card.green { --accent: var(--nim); --glow: rgba(118, 185, 0, 0.28); --icon-color: var(--nim); --icon-surface: rgba(118, 185, 0, 0.15); }
+      .feature-card.orange { --accent: var(--hf); --glow: rgba(255, 122, 0, 0.28); --icon-color: var(--hf); --icon-surface: rgba(255, 122, 0, 0.15); }
+      .feature-card.purple { --accent: #a78bfa; --glow: rgba(167, 139, 250, 0.25); --icon-color: #a78bfa; --icon-surface: rgba(167, 139, 250, 0.14); }
+      @media (hover: hover) and (pointer: fine) {
         .feature-card:hover {
-            background: var(--bg-card-hover);
-            border-color: var(--border-hover);
-            transform: translateY(-4px);
-            box-shadow: var(--shadow-glow);
+          border-color: var(--accent);
+          background: var(--surface-strong);
+          box-shadow: 0 0 0 1px color-mix(in srgb, var(--accent) 38%, transparent), 0 16px 30px rgba(0, 0, 0, 0.28), 0 0 30px var(--glow);
+          transform: translateY(-4px);
         }
-        .feature-card:hover::before { opacity: 0.5; }
-        .feature-icon {
-            width: 48px; height: 48px;
-            border-radius: 12px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            margin-bottom: 1.25rem;
-        }
-        .feature-icon.blue { background: rgba(59, 130, 246, 0.1); }
-        .feature-icon.cyan { background: rgba(6, 182, 212, 0.1); }
-        .feature-icon.green { background: rgba(34, 197, 94, 0.1); }
-        .feature-icon.orange { background: rgba(245, 158, 11, 0.1); }
-        .feature-icon.purple { background: rgba(139, 92, 246, 0.1); }
-        .feature-card h3 { font-size: 1.125rem; font-weight: 700; margin-bottom: 0.75rem; }
-        .feature-card p { color: var(--text-secondary); font-size: 0.9375rem; line-height: 1.65; }
+        .feature-card:hover::before { opacity: 1; transform: scale(1.08); animation: card-aura 2.6s ease-in-out infinite; }
+        .feature-card:hover::after { right: 0; left: 0; opacity: 1; }
+      }
+      @keyframes card-aura {
+        50% { opacity: 0.7; }
+      }
 
-        /* Platforms */
-        .platforms {
-            padding: 4rem 2rem;
-            background: var(--bg-secondary);
-            border-top: 1px solid var(--border);
-            border-bottom: 1px solid var(--border);
-        }
-        .platforms-grid { display: flex; justify-content: center; gap: 3rem; flex-wrap: wrap; align-items: center; }
-        .platform-item {
-            display: flex;
-            align-items: center;
-            gap: 0.75rem;
-            color: var(--text-secondary);
-            font-size: 0.9375rem;
-            font-weight: 500;
-        }
-        .platform-item svg { width: 24px; height: 24px; opacity: 0.7; }
+      .skills { display: grid; grid-template-columns: 1.2fr 0.8fr; gap: 14px; }
+      .skills-intro { padding: 24px; border-left: 4px solid var(--nim); }
+      .skills-intro p { margin: 12px 0 0; color: var(--muted); }
+      .update-list { display: grid; gap: 10px; }
+      .update { display: flex; align-items: flex-start; gap: 11px; padding: 14px; }
+      .update strong { display: block; }
+      .update span { color: var(--muted); font-size: 14px; }
 
-        /* Note */
-        .note { padding: 4rem 2rem; text-align: center; }
-        .note-box {
-            max-width: 700px;
-            margin: 0 auto;
-            background: rgba(245, 158, 11, 0.05);
-            border: 1px solid rgba(245, 158, 11, 0.15);
-            border-radius: 12px;
-            padding: 1.5rem 2rem;
-            color: var(--text-secondary);
-            font-size: 0.9375rem;
-        }
-        .note-box strong { color: var(--accent-orange); }
+      .models { display: grid; grid-template-columns: repeat(2, 1fr); gap: 14px; }
+      .provider { padding: 22px; }
+      .provider-header { display: flex; align-items: center; justify-content: space-between; gap: 12px; }
+      .provider p { margin: 10px 0 16px; color: var(--muted); }
+      .pill, .tag { display: inline-flex; align-items: center; border-radius: 7px; font-size: 12px; font-weight: 800; letter-spacing: 0.02em; }
+      .pill { padding: 5px 8px; color: white; }
+      .pill.nim { background: #28a745; }
+      .pill.hf { background: var(--hf); }
+      .tags { display: flex; flex-wrap: wrap; gap: 8px; }
+      .tag { padding: 5px 8px; color: #182026; }
+      .tag.reasoning { background: var(--peach); }
+      .tag.coding { background: var(--cyan); }
+      .tag.fast { background: var(--amber); }
+      .tag.skills { background: var(--blue); color: white; }
 
-        /* Footer */
-        footer { padding: 3rem 2rem; border-top: 1px solid var(--border); text-align: center; }
-        .footer-content { display: flex; flex-direction: column; align-items: center; gap: 1.5rem; }
-        .footer-logo { display: flex; align-items: center; gap: 0.75rem; font-weight: 700; font-size: 1.125rem; color: var(--text-primary); text-decoration: none; }
-        .footer-logo img { width: 32px; height: 32px; border-radius: 8px; }
-        .footer-links { display: flex; gap: 2rem; flex-wrap: wrap; justify-content: center; }
-        .footer-links a { color: var(--text-secondary); text-decoration: none; font-size: 0.875rem; transition: color 0.2s ease; }
-        .footer-links a:hover { color: var(--text-primary); }
-        .footer-copy { color: var(--text-muted); font-size: 0.8125rem; }
+      .privacy { display: grid; grid-template-columns: auto 1fr; gap: 16px; align-items: start; padding: 22px; }
+      .privacy p { margin: 8px 0 0; color: var(--muted); }
+      footer { padding: 0 0 34px; color: var(--muted); font-size: 14px; }
+      footer .shell { display: flex; justify-content: space-between; gap: 16px; }
 
-        /* Animations */
-        .fade-in { opacity: 0; transform: translateY(24px); transition: opacity 0.6s ease, transform 0.6s ease; }
-        .fade-in.visible { opacity: 1; transform: translateY(0); }
-
-        /* Responsive */
-        @media (max-width: 768px) {
-            nav { padding: 0.75rem 1rem; }
-            .nav-links { display: none; }
-            .hero { padding: 7rem 1.5rem 3rem; }
-            .features { padding: 4rem 1.5rem; }
-            .features-grid { grid-template-columns: 1fr; }
-            .hero-cta-group { flex-direction: column; align-items: center; }
-            .btn-primary, .btn-secondary { width: 100%; max-width: 280px; justify-content: center; }
-        }
+      @media (prefers-reduced-motion: reduce) {
+        *, *::before, *::after { scroll-behavior: auto !important; transition-duration: 0.01ms !important; animation-duration: 0.01ms !important; }
+      }
+      @media (max-width: 820px) {
+        .feature-grid { grid-template-columns: repeat(2, 1fr); }
+      }
+      @media (max-width: 680px) {
+        .shell { width: min(100% - 28px, 620px); }
+        .nav-links { display: none; }
+        .hero { padding: 18px; }
+        .grid, .feature-grid, .models, .skills { grid-template-columns: 1fr; }
+        .feature-card { min-height: 0; }
+        footer .shell { display: block; }
+      }
     </style>
-</head>
-<body>
-    <nav id="navbar">
-        <a href="#" class="nav-logo">
-            <span style="width:36px;height:36px;border-radius:9px;background:linear-gradient(135deg,#3b82f6,#8b5cf6);display:flex;align-items:center;justify-content:center;color:#fff;font-weight:900;font-size:1.25rem">T</span>
-            <span>TokenDeck</span>
-        </a>
+  </head>
+  <body>
+    <header class="shell">
+      <nav class="glass" aria-label="Main navigation">
+        <a class="brand" href="#top"><img src="assets/app-icon.png" alt="" />TokenDeck</a>
         <div class="nav-links">
-            <a href="#features">Features</a>
-            <a href="https://github.com/p3u1/TokenDeck" target="_blank">GitHub</a>
-            <a href="#" class="nav-cta">Get the App</a>
+          <a href="#features">Features</a>
+          <a href="#skills">Skills &amp; Personas</a>
+          <a href="#models">Models</a>
+          <a href="#requests">Requests</a>
         </div>
-    </nav>
+      </nav>
+    </header>
 
-    <section class="hero">
-        <div class="hero-content">
-            <div class="hero-badge">
-                <span class="pulse"></span>
-                Now Available for Mac & iOS
-            </div>
-            <h1>
-                Your AI Models.<br>
-                <span class="gradient-text">Your Rules.</span>
-            </h1>
-            <p>
-                TokenDeck is a powerful, native client that lets you harness the full potential of AI models directly on your Mac and iOS devices. Bring your own keys, skip the browser limits.
-            </p>
-            <div class="hero-banner">
-                <div style="padding:3rem 2rem;background:linear-gradient(135deg,#1a1a2e,#0a0a0f);border-radius:16px;border:1px solid #252532;text-align:center">
-                    <h3 style="font-size:1.75rem;font-weight:800;margin-bottom:0.5rem;color:#f0f0f5">TokenDeck</h3>
-                    <p style="color:#9a9aaf;font-size:1.125rem">Organize. Access. Master Your Tokens.</p>
-                </div>
-            </div>
-            <div class="hero-cta-group">
-                <a href="#features" class="btn-primary">
-                    Explore Features
-                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
-                </a>
-                <a href="https://github.com/p3u1/TokenDeck" target="_blank" class="btn-secondary">
-                    <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0024 12c0-6.63-5.37-12-12-12z"/></svg>
-                    View on GitHub
-                </a>
-            </div>
+    <main class="shell" id="top">
+      <section class="hero glass" aria-labelledby="hero-title">
+        <img class="banner" src="assets/banner-dark.png" alt="TokenDeck — Organize, Access, Master Your Tokens." />
+        <div class="hero-copy">
+          <p class="eyebrow">SUPPORT &amp; MODEL WORKSPACE</p>
+          <h1 id="hero-title">Private model access, without the clutter.</h1>
+          <p class="lede">A native macOS and iOS client for NVIDIA NIM and Hugging Face models, with focused chats, saved projects, and a growing skills library.</p>
+          <div class="actions">
+            <a class="button primary" href="#features">Explore features</a>
+            <a class="button" href="https://github.com/p3u1/TokenDeck/issues/new?title=TestFlight%20access%20request&amp;body=I%20would%20like%20to%20request%20TestFlight%20access.%20Please%20do%20not%20post%20your%20email%20address%20in%20a%20public%20issue." target="_blank" rel="noreferrer">Request TestFlight ↗</a>
+            <a class="button" href="https://github.com/p3u1/TokenDeck" target="_blank" rel="noreferrer">Project updates ↗</a>
+          </div>
         </div>
-        <div class="scroll-indicator">
-            <span>Scroll to explore</span>
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14M5 12l7 7 7-7"/></svg>
+      </section>
+
+      <section id="features" aria-labelledby="features-title">
+        <div class="section-heading">
+          <p class="eyebrow">THE WORKSPACE</p>
+          <h2 id="features-title">Everything you need to master your AI workflow.</h2>
+          <p>The full original feature set remains here—now with a subtle colour-matched hover lift and glass glow on desktop.</p>
         </div>
-    </section>
-
-    <section class="platforms">
-        <div class="container">
-            <div class="platforms-grid">
-                <div class="platform-item">
-                    <svg viewBox="0 0 24 24" fill="currentColor"><path d="M18.71 19.5C17.88 20.74 17 21.95 15.66 21.97C14.32 22 13.89 21.18 12.37 21.18C10.84 21.18 10.37 21.95 9.1 22C7.79 22.05 6.8 20.68 5.96 19.47C4.25 17 2.94 12.45 4.7 9.39C5.57 7.87 7.13 6.91 8.82 6.88C10.1 6.86 11.32 7.75 12.11 7.75C12.89 7.75 14.37 6.68 15.92 6.84C16.57 6.87 18.39 7.1 19.56 8.82C19.47 8.88 17.39 10.1 17.41 12.63C17.44 15.65 20.06 16.66 20.09 16.67C20.06 16.74 19.67 18.11 18.71 19.5ZM13 3.5C13.73 2.67 14.94 2.04 15.94 2C16.07 3.17 15.6 4.35 14.9 5.19C14.21 6.04 13.07 6.7 11.95 6.61C11.8 5.46 12.36 4.26 13 3.5Z"/></svg>
-                    macOS
-                </div>
-                <div class="platform-item">
-                    <svg viewBox="0 0 24 24" fill="currentColor"><path d="M19.07 4.93L17.66 6.34C18.5 7.18 19 8.27 19 9.5C19 10.73 18.5 11.82 17.66 12.66L19.07 14.07C20.24 12.9 21 11.24 21 9.5C21 7.76 20.24 6.1 19.07 4.93ZM6.34 6.34L4.93 4.93C3.76 6.1 3 7.76 3 9.5C3 11.24 3.76 12.9 4.93 14.07L6.34 12.66C5.5 11.82 5 10.73 5 9.5C5 8.27 5.5 7.18 6.34 6.34ZM9 18H15V20H9V18ZM2 16H4V20H2V16ZM20 16H22V20H20V16ZM12 2C8.13 2 5 5.13 5 9C5 11.38 6.19 13.47 8 14.74V17H16V14.74C17.81 13.47 19 11.38 19 9C19 5.13 15.87 2 12 2ZM14 15H10V14H14V15ZM15.54 12.71L14.83 12L12 14.83L9.17 12L8.46 12.71C7.3 11.57 6.5 10.14 6.09 8.5H17.91C17.5 10.14 16.7 11.57 15.54 12.71Z"/></svg>
-                    iOS
-                </div>
-                <div class="platform-item">
-                    <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 17.93c-3.95-.49-7-3.85-7-7.93 0-.62.08-1.21.21-1.79L9 15v1c0 1.1.9 2 2 2v1.93zm6.9-2.54c-.26-.81-1-1.39-1.9-1.39h-1v-3c0-.55-.45-1-1-1H8v-2h2c.55 0 1-.45 1-1V7h2c1.1 0 2-.9 2-2v-.41c2.93 1.19 5 4.06 5 7.41 0 2.08-.8 3.97-2.1 5.39z"/></svg>
-                    Universal Purchase
-                </div>
-                <div class="platform-item">
-                    <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 1L3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-9-4zm0 10.99h7c-.53 4.12-3.28 7.79-7 8.94V12H5V6.3l7-3.11v8.8z"/></svg>
-                    Secure & Private
-                </div>
-            </div>
+        <div class="feature-grid">
+          <article class="feature-card blue glass">
+            <div class="icon">⌘</div>
+            <h3>Bring Your Own Keys</h3>
+            <p>Seamlessly integrate your free NVIDIA NIM or Hugging Face API keys. Run world-class AI models natively without being throttled by browser-based web UI limits.</p>
+          </article>
+          <article class="feature-card cyan glass">
+            <div class="icon">✦</div>
+            <h3>Persistent Memory &amp; Organization</h3>
+            <p>Never lose track of a great idea. TokenDeck features true persistent memory, allowing you to pin important projects and save critical conversations for instant access later.</p>
+          </article>
+          <article class="feature-card green glass">
+            <div class="icon">⌁</div>
+            <h3>Instructional Skills</h3>
+            <p>Expand your workflow by installing custom instructional skills. The skill library receives continuous updates, allowing you to tailor the AI's behavior to your specific development needs.</p>
+          </article>
+          <article class="feature-card orange glass">
+            <div class="icon">⌘</div>
+            <h3>Local MCP Server Client</h3>
+            <p>Securely connect to your Model Context Protocol (MCP) servers hosted on your local network. TokenDeck acts as a perfect UI bridge for your local contextual data streams while fully complying with platform security guidelines.</p>
+          </article>
+          <article class="feature-card purple glass">
+            <div class="icon">▣</div>
+            <h3>Universal Purchase</h3>
+            <p>Buy once and use across both your Mac and iOS devices. Your projects, pins, and skills sync beautifully across your ecosystem.</p>
+          </article>
         </div>
-    </section>
+      </section>
 
-    <section class="features" id="features">
-        <div class="container">
-            <div class="section-header fade-in">
-                <span class="section-label">Features</span>
-                <h2>Everything you need to<br><span class="gradient-text">master your AI workflow</span></h2>
-                <p>TokenDeck eliminates the friction of browser-based AI tools, giving you a native, persistent, and unrestricted experience.</p>
-            </div>
-
-            <div class="features-grid">
-                <div class="feature-card fade-in">
-                    <div class="feature-icon blue">
-                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#3b82f6" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 2l-2 2m-7.61 7.61a5.5 5.5 0 11-7.778 7.778 5.5 5.5 0 017.777-7.777zm0 0L15.5 7.5m0 0l3 3L22 7l-3-3m-3.5 3.5L19 4"/></svg>
-                    </div>
-                    <h3>Bring Your Own Keys</h3>
-                    <p>Seamlessly integrate your free NVIDIA NIM or Hugging Face API keys. Run world-class AI models natively without being throttled by browser-based web UI limits.</p>
-                </div>
-
-                <div class="feature-card fade-in">
-                    <div class="feature-icon cyan">
-                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#06b6d4" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2v4M12 18v4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M2 12h4M18 12h4M4.93 19.07l2.83-2.83M16.24 7.76l2.83-2.83"/><circle cx="12" cy="12" r="3"/></svg>
-                    </div>
-                    <h3>Persistent Memory & Organization</h3>
-                    <p>Never lose track of a great idea. TokenDeck features true persistent memory, allowing you to pin important projects and save critical conversations for instant access later.</p>
-                </div>
-
-                <div class="feature-card fade-in">
-                    <div class="feature-icon green">
-                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#22c55e" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14.7 6.3a1 1 0 000 1.4l1.6 1.6a1 1 0 001.4 0l3.77-3.77a6 6 0 01-7.94 7.94l-6.91 6.91a2.12 2.12 0 01-3-3l6.91-6.91a6 6 0 017.94-7.94l-3.76 3.76z"/></svg>
-                    </div>
-                    <h3>Instructional Skills</h3>
-                    <p>Expand your workflow by installing custom instructional skills. The skill library receives continuous updates, allowing you to tailor the AI's behavior to your specific development needs.</p>
-                </div>
-
-                <div class="feature-card fade-in">
-                    <div class="feature-icon orange">
-                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#f59e0b" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="3" width="20" height="14" rx="2" ry="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg>
-                    </div>
-                    <h3>Local MCP Server Client</h3>
-                    <p>Securely connect to your Model Context Protocol (MCP) servers hosted on your local network. TokenDeck acts as a perfect UI bridge for your local contextual data streams while fully complying with platform security guidelines.</p>
-                </div>
-
-                <div class="feature-card fade-in">
-                    <div class="feature-icon purple">
-                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#8b5cf6" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="2" width="14" height="20" rx="2" ry="2"/><line x1="12" y1="18" x2="12.01" y2="18"/></svg>
-                    </div>
-                    <h3>Universal Purchase</h3>
-                    <p>Buy once and use across both your Mac and iOS devices. Your projects, pins, and skills sync beautifully across your ecosystem.</p>
-                </div>
-            </div>
+      <section id="skills" aria-labelledby="skills-title">
+        <div class="section-heading">
+          <p class="eyebrow">SKILLS &amp; PERSONAS</p>
+          <h2 id="skills-title">A small library that keeps growing.</h2>
         </div>
-    </section>
-
-    <section class="note">
-        <div class="container">
-            <div class="note-box fade-in">
-                <strong>Note:</strong> TokenDeck is an API client and requires the user to provide their own valid API keys (e.g., NVIDIA NIM, Hugging Face) or have an active local network MCP server to function.
+        <div class="skills">
+          <article class="skills-intro glass">
+            <h3>New skills and personas are added here regularly.</h3>
+            <p>Discover instruction personas, prompt packs, and guides for connecting approved remote tools to a conversation.</p>
+            <div class="actions">
+              <a class="button" href="https://github.com/p3u1/TokenDeck" target="_blank" rel="noreferrer">Watch the library on GitHub ↗</a>
+              <a class="button" href="https://github.com/p3u1/TokenDeck/issues/new?title=Skill%20or%20persona%20submission&amp;body=Describe%20the%20skill%20or%20persona%20and%20attach%20the%20Markdown%20or%20JSON%20file%20for%20review." target="_blank" rel="noreferrer">Submit a skill ↗</a>
             </div>
+          </article>
+          <div class="update-list">
+            <article class="update glass"><span>▣</span><div><strong>Local Personas</strong><span>Read-only Markdown or JSON instructions, enabled for the current chat.</span></div></article>
+            <article class="update glass"><span>⌁</span><div><strong>Remote Connections</strong><span>HTTP/SSE MCP connection guides for externally hosted tools.</span></div></article>
+            <article class="update glass"><span>↑</span><div><strong>Community submissions</strong><span>Attach a Markdown or JSON skill to a GitHub issue for review.</span></div></article>
+          </div>
         </div>
-    </section>
+      </section>
 
-    <footer>
-        <div class="footer-content">
-            <a href="#" class="footer-logo">
-                <span style="width:32px;height:32px;border-radius:8px;background:linear-gradient(135deg,#3b82f6,#8b5cf6);display:flex;align-items:center;justify-content:center;color:#fff;font-weight:900;font-size:1rem">T</span>
-                <span>TokenDeck</span>
-            </a>
-            <div class="footer-links">
-                <a href="https://github.com/p3u1/TokenDeck" target="_blank">GitHub</a>
-                <a href="#features">Features</a>
-                <a href="https://github.com/p3u1/TokenDeck/issues" target="_blank">Support</a>
-            </div>
-            <p class="footer-copy">&copy; 2026 TokenDeck. Built by Paul K. All rights reserved.</p>
+      <section id="models" aria-labelledby="models-title">
+        <div class="section-heading">
+          <p class="eyebrow">MODEL COVERAGE</p>
+          <h2 id="models-title">Pick for the job, not the logo.</h2>
+          <p>Capability labels make it easier to find a model for reasoning, coding, and fast chat.</p>
         </div>
-    </footer>
+        <div class="models">
+          <article class="provider glass">
+            <div class="provider-header"><h3>NVIDIA models</h3><span class="pill nim">NIM</span></div>
+            <p>Options include Llama, Qwen, Kimi, DeepSeek, GPT-OSS, Gemma, Mixtral, and Nemotron families.</p>
+            <div class="tags"><span class="tag reasoning">Reasoning</span><span class="tag coding">Coding</span><span class="tag fast">Fast chat</span><span class="tag skills">Skills</span></div>
+          </article>
+          <article class="provider glass">
+            <div class="provider-header"><h3>Hugging Face models</h3><span class="pill hf">HF</span></div>
+            <p>Use the same workspace with routed GPT-OSS, Qwen, DeepSeek, GLM, Gemma, and Kimi models.</p>
+            <div class="tags"><span class="tag reasoning">Reasoning</span><span class="tag coding">Coding</span><span class="tag fast">Fast chat</span><span class="tag skills">Skills</span></div>
+          </article>
+        </div>
+      </section>
 
-    <script>
-        const navbar = document.getElementById('navbar');
-        window.addEventListener('scroll', () => {
-            navbar.classList.toggle('scrolled', window.scrollY > 50);
-        });
+      <section id="requests" aria-labelledby="requests-title">
+        <div class="section-heading">
+          <p class="eyebrow">TESTFLIGHT &amp; FEEDBACK</p>
+          <h2 id="requests-title">Help shape what comes next.</h2>
+          <p>Request TestFlight access, share an idea, or submit a persona for the public skills library.</p>
+        </div>
+        <div class="grid">
+          <article class="card glass"><div class="icon">β</div><h3>Request TestFlight</h3><p>Ask for early access from the TokenDeck team. Keep email addresses out of public issues.</p><div class="actions"><a class="button" href="https://github.com/p3u1/TokenDeck/issues/new?title=TestFlight%20access%20request&amp;body=I%20would%20like%20to%20request%20TestFlight%20access.%20Please%20do%20not%20post%20your%20email%20address%20in%20a%20public%20issue." target="_blank" rel="noreferrer">Request access ↗</a></div></article>
+          <article class="card glass"><div class="icon" style="--icon-color:var(--hf);--icon-surface:rgba(255,122,0,.15)">✦</div><h3>Request a feature</h3><p>Describe the problem you want TokenDeck to solve and the model or workflow it affects.</p><div class="actions"><a class="button" href="https://github.com/p3u1/TokenDeck/issues/new?title=Feature%20request%3A%20" target="_blank" rel="noreferrer">Share an idea ↗</a></div></article>
+          <article class="card glass"><div class="icon" style="--icon-color:var(--nim);--icon-surface:rgba(118,185,0,.15)">↑</div><h3>Submit a skill</h3><p>Attach a Markdown or JSON persona to a GitHub issue. Submissions are reviewed before publishing.</p><div class="actions"><a class="button" href="https://github.com/p3u1/TokenDeck/issues/new?title=Skill%20or%20persona%20submission&amp;body=Describe%20the%20skill%20or%20persona%20and%20attach%20the%20Markdown%20or%20JSON%20file%20for%20review." target="_blank" rel="noreferrer">Upload for review ↗</a></div></article>
+        </div>
+      </section>
 
-        const observer = new IntersectionObserver((entries) => {
-            entries.forEach(entry => {
-                if (entry.isIntersecting) entry.target.classList.add('visible');
-            });
-        }, { threshold: 0.1, rootMargin: '0px 0px -50px 0px' });
+      <section id="privacy" aria-labelledby="privacy-title">
+        <article class="privacy glass">
+          <div class="icon">⌾</div>
+          <div><h2 id="privacy-title">Designed to keep control close.</h2><p>API keys stay in the system Keychain. Local personas and remote connections stay scoped to the conversation where you choose to use them. TokenDeck does not download or execute local code for skills.</p></div>
+        </article>
+      </section>
+    </main>
 
-        document.querySelectorAll('.fade-in').forEach(el => observer.observe(el));
-
-        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-            anchor.addEventListener('click', function(e) {
-                e.preventDefault();
-                const target = document.querySelector(this.getAttribute('href'));
-                if (target) target.scrollIntoView({ behavior: 'smooth', block: 'start' });
-            });
-        });
-    </script>
-</body>
+    <footer><div class="shell"><span>© 2026 TokenDeck</span><a href="https://github.com/p3u1/TokenDeck" target="_blank" rel="noreferrer">GitHub ↗</a></div></footer>
+  </body>
 </html>
