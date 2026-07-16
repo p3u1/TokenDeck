@@ -203,6 +203,23 @@
       .tag.fast { background: var(--amber); }
       .tag.skills { background: var(--blue); color: white; }
 
+      .release-notes { padding: 24px; }
+      .release-notes > h3 { font-size: 24px; }
+      .release-intro { margin: 10px 0 0; color: var(--muted); font-size: 16px; }
+      .release-subheading { margin-top: 22px; font-size: 17px; }
+      .release-list {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 10px 28px;
+        margin: 12px 0 0;
+        padding-left: 20px;
+        color: var(--muted);
+      }
+      .release-list li { padding-left: 2px; }
+      .release-privacy { margin: 22px 0 0; padding-top: 18px; border-top: 1px solid var(--line); }
+      .release-privacy p, .release-welcome { margin: 8px 0 0; color: var(--muted); }
+      .release-welcome { color: var(--ink); font-weight: 700; }
+
       .privacy { display: grid; grid-template-columns: auto 1fr; gap: 16px; align-items: start; padding: 22px; }
       .privacy p { margin: 8px 0 0; color: var(--muted); }
       footer { padding: 0 0 34px; color: var(--muted); font-size: 14px; }
@@ -218,7 +235,7 @@
         .shell { width: min(100% - 28px, 620px); }
         .nav-links { display: none; }
         .hero { padding: 18px; }
-        .grid, .feature-grid, .models, .skills { grid-template-columns: 1fr; }
+        .grid, .feature-grid, .models, .skills, .release-list { grid-template-columns: 1fr; }
         .feature-card { min-height: 0; }
         footer .shell { display: block; }
       }
@@ -327,6 +344,36 @@
             <div class="tags"><span class="tag reasoning">Reasoning</span><span class="tag coding">Coding</span><span class="tag fast">Fast chat</span><span class="tag skills">Skills</span></div>
           </article>
         </div>
+      </section>
+
+      <section class="content-section" id="release-notes" aria-labelledby="release-notes-title">
+        <div class="section-heading">
+          <p class="eyebrow">RELEASE NOTES</p>
+          <h2 id="release-notes-title">TokenDeck 1.0</h2>
+        </div>
+        <article class="release-notes glass">
+          <h3>TokenDeck 1.0</h3>
+          <p class="release-intro">TokenDeck is a private, native workspace for using the AI models you choose on macOS and iOS.</p>
+
+          <h3 class="release-subheading">What’s New</h3>
+          <ul class="release-list">
+            <li>Stream chats with supported NVIDIA NIM and Hugging Face models.</li>
+            <li>Bring your own API keys, stored securely in your device Keychain.</li>
+            <li>Browse models by provider and capability, then favourite the ones you use most.</li>
+            <li>Send text and images to compatible vision models, with attachment previews before sending.</li>
+            <li>Create, organise, pin, and resume conversations and projects.</li>
+            <li>Export conversations as Markdown, and copy or speak assistant replies.</li>
+            <li>Use Local Personas to add read-only instructions to a specific chat.</li>
+            <li>Connect approved remote MCP tools over HTTP/SSE—without TokenDeck downloading or running local code.</li>
+            <li>Keep skills, personas, and remote connections isolated to the conversation where you enable them.</li>
+          </ul>
+
+          <div class="release-privacy">
+            <h3>Built for Privacy</h3>
+            <p>Your API keys remain in Keychain. Conversations stay on your device, and skills are scoped to the chat where you choose to use them.</p>
+            <p class="release-welcome">Welcome to TokenDeck 1.0.</p>
+          </div>
+        </article>
       </section>
 
       <section class="content-section" id="requests" aria-labelledby="requests-title">
